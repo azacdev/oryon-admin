@@ -168,8 +168,6 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
           </Button>
         </form>
       </Form>
-
-      <Separator />
     </>
   );
 };
