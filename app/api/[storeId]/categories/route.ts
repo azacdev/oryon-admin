@@ -10,23 +10,24 @@ export async function POST(
   try {
     const { userId } = auth();
     const body = await req.json();
-    const { label, imageUrl } = body;
+    const { name, billboardId } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 401 });
     }
 
-    if (!label) {
-      return new NextResponse("Label is required", { status: 400 });
+    if (!name) {
+      return new NextResponse("Name is required", { status: 400 });
+    }
+
+    if (!billboardId) {
+      return new NextResponse("Billboard id is required", { status: 400 });
     }
 
     if (!params.storeId) {
       return new NextResponse("StoreId is required", { status: 400 });
     }
 
-    if (!imageUrl) {
-      return new NextResponse("Image URL is required", { status: 400 });
-    }
     // check if user is trying to modify someone elses store
     const storeByUserId = await prismadb.store.findFirst({
       where: {
@@ -39,17 +40,17 @@ export async function POST(
       return new NextResponse("Unauthorised", { status: 403 });
     }
 
-    const billboard = await prismadb.billboard.create({
+    const category = await prismadb.catergory.create({
       data: {
-        label,
-        imageUrl,
+        name,
+        billboardId,
         storeId: params.storeId,
       },
     });
 
-    return NextResponse.json(billboard);
+    return NextResponse.json(category);
   } catch (error) {
-    console.log("[BILLBOARDS_POST]", error);
+    console.log("[CATEGORIES_POST]", error);
     return new NextResponse("Internal error", { status: 500 });
   }
 }
@@ -63,13 +64,13 @@ export async function GET(
       return new NextResponse("StoreId is required", { status: 400 });
     }
 
-    const billboards = await prismadb.billboard.findMany({
+    const categories = await prismadb.catergory.findMany({
       where: {
         storeId: params.storeId,
       },
     });
 
-    return NextResponse.json(billboards);
+    return NextResponse.json(categories);
   } catch (error) {
     console.log("[BILLBOARDS_GET]", error);
     return new NextResponse("Internal error", { status: 500 });
