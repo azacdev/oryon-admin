@@ -131,7 +131,7 @@ const BillboardForm = ({ initialData }: BillboardFormProps) => {
             name="imageUrl"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Label</FormLabel>
+                <FormLabel>Background Image</FormLabel>
                 <FormControl>
                   <ImageUpload
                     value={field.value ? [field.value] : []}

@@ -70,7 +70,7 @@ export const StoreModal = () => {
                       <FormControl>
                         <Input
                           disabled={loading}
-                          placeholder="E-Commerce"
+                          placeholder="E-Commerce store"
                           {...field}
                         />
                       </FormControl>

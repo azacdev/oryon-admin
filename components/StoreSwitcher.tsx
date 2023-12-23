@@ -6,7 +6,7 @@ import {
   PlusCircle,
   Store as StoreIcon,
 } from "lucide-react";
-import { store } from "@prisma/client";
+import { Store } from "@prisma/client";
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -27,14 +27,13 @@ import {
   CommandList,
   CommandSeparator,
 } from "@components/ui/command";
-import { StoreModal } from "./modals/store-modal";
 
 type PopoverTriggerProps = React.ComponentPropsWithoutRef<
   typeof PopoverTrigger
 >;
 
 interface StoreSwitcherProps extends PopoverTriggerProps {
-  items: store[];
+  items: Store[];
 }
 
 const StoreSwitcher = ({ className, items = [] }: StoreSwitcherProps) => {
