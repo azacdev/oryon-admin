@@ -8,7 +8,6 @@ import { Trash } from "lucide-react";
 import { Catergory, Color, Image, Product, Size } from "@prisma/client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useParams, useRouter } from "next/navigation";
-
 import { useForm } from "react-hook-form";
 import { Input } from "@components/ui/input";
 import { Button } from "@components/ui/button";
@@ -74,7 +73,7 @@ const ProductForm = ({
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData
-      ? { ...initialData, price: parseFloat(String(initialData?.Price)) }
+      ? { ...initialData, price: parseFloat(String(initialData?.price)) }
       : {
           name: "",
           images: [],
