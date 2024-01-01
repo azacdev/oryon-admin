@@ -27,7 +27,7 @@ import { ApiAlert } from "@components/ui/api-alert";
 import { useOrigin } from "@hooks/use-origin";
 
 interface SettingsFormProps {
-  initialData: store;
+  initialData: Store;
 }
 
 const formSchema = z.object({
