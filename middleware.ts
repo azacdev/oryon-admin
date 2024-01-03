@@ -10,3 +10,5 @@ export default authMiddleware({
 export const config = {
   matcher: ["/((?!.*\\..*|_next).*)", "/", "/(api|trpc)(.*)"],
 };
+
+export const allowedOrigins = process.env.NODE_ENV === "production" ? ["https://oryon.vercel.app", "oryon.vercel.app/"] : ["http://localhost:3001", "http://localhost:3000"]
