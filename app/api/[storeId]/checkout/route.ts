@@ -146,9 +146,9 @@ export async function POST(
   });
 
   console.log(session.data.authorization_url);
-  
+
   return NextResponse.json(
-    { url: session.data.authorization_url},
+    { url: session.data.authorization_url },
     {
       headers: corsHeaders,
     }
