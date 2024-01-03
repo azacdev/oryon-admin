@@ -89,15 +89,15 @@ import Paystack from "paystack";
 import { NextResponse } from "next/server";
 import prismadb from "@lib/prismadb";
 
-// const corsHeaders = {
-//   // "Access-Control-Allow-Origin": "https://oryon.vercel.app",
-//   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-//   "Access-Control-Allow-Headers": "Content-Type, Authorization",
-// };
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "https://oryon.vercel.app",
+  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+};
 
-// export async function OPTIONS() {
-//   return NextResponse.json({}, { headers: corsHeaders });
-// }
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
 
 export async function POST(
   req: Request,
@@ -147,9 +147,9 @@ export async function POST(
 
   return NextResponse.json(
     { url: session.data.authorization_url},
-    // {
-    //   headers: corsHeaders,
-    // }
+    {
+      headers: corsHeaders,
+    }
   );
 }
 
