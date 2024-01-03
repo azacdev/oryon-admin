@@ -90,7 +90,7 @@ import { NextResponse } from "next/server";
 import prismadb from "@lib/prismadb";
 
 const corsHeaders = {
-  "Access-Control-Allow-Origin": "https://oryon.vercel.app",
+  "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
@@ -140,11 +140,13 @@ export async function POST(
 
   const session = await paystack.transaction.initialize({
     amount: calculateTotalAmount(products),
-    email: "azacdev@gmail.com", // Replace with the customer's email
+    email: "azacdev@gmail.com",
     reference: generateUniqueReference(),
     callback_url: `${process.env.FRONTEND_STORE_URL}?success=1`,
   });
 
+  console.log(session.data.authorization_url);
+  
   return NextResponse.json(
     { url: session.data.authorization_url},
     {
