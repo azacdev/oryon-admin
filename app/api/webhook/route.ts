@@ -1,70 +1,69 @@
-import Stripe from "stripe";
-import { headers } from "next/headers";
-import { NextResponse } from "next/server";
-
-import { stripe } from "@lib/stripe";
+// api/webhooks/paystack.ts
+import { NextApiRequest, NextApiResponse } from "next";
 import prismadb from "@lib/prismadb";
 
-export async function POST(req: Request) {
-  const body = await req.text();
-  const signature = headers().get("Stripe-Signature") as string;
-
-  let event: Stripe.Event;
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
+  if (req.method !== "POST") {
+    return res.status(405).end(); // Method Not Allowed
+  }
 
   try {
-    event = stripe.webhooks.constructEvent(
-      body,
-      signature,
-      process.env.STRIPE_WEBHOOK__SECRET!
-    );
-  } catch (error: any) {
-    return new NextResponse(`webhook Error: ${error.message}`, { status: 400 });
+    const data = req.body;
+    const eventType = data.event;
+
+    // Handle different Paystack events
+    switch (eventType) {
+      case "charge.success":
+        await handleSuccessfulCharge(data);
+        break;
+      // Add more cases for other events as needed
+
+      default:
+        break;
+    }
+
+    res.status(200).end(); // Respond to Paystack immediately
+  } catch (error) {
+    console.error("Error handling Paystack webhook:", error);
+    res.status(500).end();
   }
+}
 
-  const session = event.data.object as Stripe.Checkout.Session;
-  const address = session?.customer_details?.address;
+// Handle a successful charge event
+async function handleSuccessfulCharge(data: any) {
+  // Extract relevant information from the Paystack webhook data
+  const { reference, metadata } = data.data;
 
-  const addressComponents = [
-    address?.line1,
-    address?.line2,
-    address?.city,
-    address?.state,
-    address?.postal_code,
-    address?.country,
-  ];
+  // Update the order in your database based on the extracted information
+  const order = await prismadb.order.update({
+    where: {
+      id: metadata.orderId, // Corrected from metadata.id
+    },
+    data: {
+      isPaid: true,
+      address: metadata.state,
+      phone: metadata.phone,
+    },
+    include: {
+      orderItems: true,
+    },
+  });
 
-  const addressString = addressComponents.filter((c) => c !== null).join(", ");
+  const productIds = order.orderItems.map((orderItems) => orderItems.productId);
 
-  if (event.type === "checkout.session.completed") {
-    const order = await prismadb.order.update({
-      where: {
-        id: session?.metadata?.orderId,
+  await prismadb.product.updateMany({
+    where: {
+      id: {
+        in: [...productIds],
       },
-      data: {
-        isPaid: true,
-        address: addressString,
-        phone: session?.customer_details?.phone || "",
-      },
-      include: {
-        orderItems: true,
-      },
-    });
+    },
+    data: {
+      isArchived: true,
+    },
+  });
 
-    const productIds = order.orderItems.map(
-      (orderItems) => orderItems.productId
-    );
-
-    await prismadb.product.updateMany({
-      where: {
-        id: {
-          in: [...productIds],
-        },
-      },
-      data: {
-        isArchived: true,
-      },
-    });
-  }
-
-  return new NextResponse(null, { status: 200 });
+  console.log(`Order with reference ${reference} marked as paid.`);
 }

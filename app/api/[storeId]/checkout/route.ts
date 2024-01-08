@@ -11,7 +11,10 @@ export async function OPTIONS() {
   return NextResponse.json({}, { headers: corsHeaders });
 }
 
-export async function POST(req: Request) {
+export async function POST(
+  req: Request,
+  { params }: { params: { storeId: string } }
+) {
   try {
     const { productIds, values } = await req.json();
 
@@ -27,22 +30,40 @@ export async function POST(req: Request) {
       },
     });
 
+    const order = await prismadb.order.create({
+      data: {
+        storeId: params.storeId,
+        isPaid: false,
+        orderItems: {
+          create: productIds.map((productId: string) => ({
+            product: {
+              connect: {
+                id: productId,
+              },
+            },
+          })),
+        },
+      },
+    });
+
     const calculateAmount = () => {
       return products.reduce(
         (total: number, item: any) => total + Number(item.price),
         0
-      );
+      ) * 100;
     };
-    const amount = calculateAmount() * 100;
+    const amount = calculateAmount();
 
     const fields = {
       email: values.email,
       amount: amount,
       metadata: {
+        orderId: order.id,
         state: values.state,
         products: products,
         firstname: values.firstname,
         phone: values.phone,
+        cancel_action: "http://localhost:3001/checkout",
       },
     };
 
@@ -52,7 +73,7 @@ export async function POST(req: Request) {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${process.env.PAYSTACK_SECRET_TEST_KEY}`,
+        Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST_KEY}`,
       },
       body: JSON.stringify(fields),
     });
@@ -66,7 +87,7 @@ export async function POST(req: Request) {
     const paystackResult = await paystackResponse.json();
 
     return new NextResponse(JSON.stringify(paystackResult), {
-      headers: corsHeaders
+      headers: corsHeaders,
     });
   } catch (error: any) {
     console.error("Error:", error);
@@ -74,7 +95,7 @@ export async function POST(req: Request) {
       JSON.stringify({ error: "An error has occurred" }),
       {
         status: 500,
-        headers: corsHeaders
+        headers: corsHeaders,
       }
     );
   }
