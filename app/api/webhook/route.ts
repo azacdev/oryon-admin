@@ -18,7 +18,7 @@ export async function POST(req: Request) {
     .digest("hex");
   const signature = headers.get("x-paystack-signature");
 
-  if (hash == signature) {
+  if (hash !== signature) {
     // Retrieve the request's body
     const eventType = body.event;
     const chargeData = body.data;
