@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   const body = await req.json();
   // console.log('requestBody', requestBody)
   const headers = req.headers;
-  const secret = process.env.PAYSTACK_SECRET_KEY;
+  const secret = process.env.PAYSTACK_SECRET_TEST_KEY;
   const cartItems = body.data.metadata.itemsInCart;
 
   const hash = crypto
