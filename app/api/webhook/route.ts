@@ -1,5 +1,5 @@
 // Use 'use strict' instead of 'use server' for strict mode
-"use strict";
+("use strict");
 
 import { NextResponse } from "next/server";
 import prismadb from "@lib/prismadb";
@@ -11,7 +11,7 @@ export async function POST(req: Request) {
   // console.log('requestBody', requestBody)
   const headers = req.headers;
   const secret = process.env.PAYSTACK_SECRET_TEST_KEY;
-  const cartItems = body.data.metadata.itemsInCart;
+  const metadata = body.data.metadata;
 
   const hash = crypto
     .createHmac("sha512", secret)
@@ -26,37 +26,44 @@ export async function POST(req: Request) {
     const chargeData = body.data;
     const status = chargeData.status;
 
-    console.log(eventType);
-    console.log(chargeData);
-    console.log(status);
-    
-    // if (eventType === "charge.success") {
-    //   if (status === "success") {
-    //     // Success! Confirm the customer's payment
-    //     try {
+    if (eventType === "charge.success") {
+      if (status === "success") {
+        // Success! Confirm the customer's payment
+        const order = await prismadb.order.update({
+          where: {
+            id: metadata?.orderId,
+          },
+          data: {
+            isPaid: true,
+            address: metadata.state,
+            phone: metadata?.phone || "",
+          },
+          include: {
+            orderItems: true,
+          },
+        });
 
-    //       return NextResponse.json(
-    //         {
-    //           message:
-    //             "Failed Transaction Notification Message Sent Successfully",
-    //         },
-    //         { status: 200 }
-    //       );
-    //     } catch (err) {
-    //       console.error("Error response body:", err);
-    //       // You might want to handle or log the error more appropriately
-    //       return NextResponse.json({
-    //         error: "An error occurred while sending the message.",
-    //       });
-    //     }
+        const productIds = order.orderItems.map(
+          (orderItems) => orderItems.productId
+        );
 
-    //     // return NextResponse.json({ message: 'Payment unsuccessful' }, { status: 400 });
-    //   }
-    // }
-  } else {
-    return NextResponse.json(
-      { message: "This request isn't from Paystack" },
-      { status: 401 }
-    );
+        await prismadb.product.updateMany({
+          where: {
+            id: {
+              in: [...productIds],
+            },
+          },
+          data: {
+            isArchived: true,
+          },
+        });
+
+        return NextResponse.json(
+          { message: "Payment unsuccessful" },
+          { status: 400 }
+        );
+      }
+    }
+    return new NextResponse(null, { status: 200 });
   }
 }
