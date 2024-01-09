@@ -7,11 +7,11 @@ import prismadb from "@lib/prismadb";
 const crypto = require("crypto");
 
 export async function POST(req: Request) {
-  const requestBody = await req.json();
+  const body = await req.json();
   // console.log('requestBody', requestBody)
   const headers = req.headers;
   const secret = process.env.PAYSTACK_SECRET_KEY;
-  const cartItems = requestBody.data.metadata.itemsInCart;
+  const cartItems = body.data.metadata.itemsInCart;
 
   const hash = crypto
     .createHmac("sha512", secret)
@@ -22,8 +22,8 @@ export async function POST(req: Request) {
   if (hash !== signature) {
     // Retrieve the request's body
 
-    const eventType = requestBody.event;
-    const chargeData = requestBody.data;
+    const eventType = body.event;
+    const chargeData = body.data;
     const status = chargeData.status;
 
     console.log(eventType);
