@@ -63,7 +63,12 @@ export async function POST(req: Request) {
           { status: 400 }
         );
       }
+    } else {
+      return NextResponse.json(
+        { message: "This request isn't from Paystack" },
+        { status: 401 }
+      );
     }
-    return new NextResponse(null, { status: 200 });
+    // return new NextResponse(null, { status: 200 });
   }
 }
