@@ -1,69 +1,62 @@
-// api/webhooks/paystack.ts
-import { NextApiRequest, NextApiResponse } from "next";
+// Use 'use strict' instead of 'use server' for strict mode
+"use strict";
+
+import { NextResponse } from "next/server";
 import prismadb from "@lib/prismadb";
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
-  if (req.method !== "POST") {
-    return res.status(405).end(); // Method Not Allowed
+const crypto = require("crypto");
+
+export async function POST(req: Request) {
+  const requestBody = await req.json();
+  // console.log('requestBody', requestBody)
+  const headers = req.headers;
+  const secret = process.env.PAYSTACK_SECRET_KEY;
+  const cartItems = requestBody.data.metadata.itemsInCart;
+
+  const hash = crypto
+    .createHmac("sha512", secret)
+    .update(JSON.stringify(req.body))
+    .digest("hex");
+  const signature = headers.get("x-paystack-signature");
+
+  if (hash !== signature) {
+    // Retrieve the request's body
+
+    const eventType = requestBody.event;
+    const chargeData = requestBody.data;
+    const status = chargeData.status;
+
+    console.log(eventType);
+    console.log(chargeData);
+    console.log(status);
+    
+    // if (eventType === "charge.success") {
+    //   if (status === "success") {
+    //     // Success! Confirm the customer's payment
+    //     try {
+
+    //       return NextResponse.json(
+    //         {
+    //           message:
+    //             "Failed Transaction Notification Message Sent Successfully",
+    //         },
+    //         { status: 200 }
+    //       );
+    //     } catch (err) {
+    //       console.error("Error response body:", err);
+    //       // You might want to handle or log the error more appropriately
+    //       return NextResponse.json({
+    //         error: "An error occurred while sending the message.",
+    //       });
+    //     }
+
+    //     // return NextResponse.json({ message: 'Payment unsuccessful' }, { status: 400 });
+    //   }
+    // }
+  } else {
+    return NextResponse.json(
+      { message: "This request isn't from Paystack" },
+      { status: 401 }
+    );
   }
-
-  try {
-    const data = req.body;
-    const eventType = data.event;
-
-    // Handle different Paystack events
-    switch (eventType) {
-      case "charge.success":
-        await handleSuccessfulCharge(data);
-        break;
-      // Add more cases for other events as needed
-
-      default:
-        break;
-    }
-
-    res.status(200).end(); // Respond to Paystack immediately
-  } catch (error) {
-    console.error("Error handling Paystack webhook:", error);
-    res.status(500).end();
-  }
-}
-
-// Handle a successful charge event
-async function handleSuccessfulCharge(data: any) {
-  // Extract relevant information from the Paystack webhook data
-  const { reference, metadata } = data.data;
-
-  // Update the order in your database based on the extracted information
-  const order = await prismadb.order.update({
-    where: {
-      id: metadata.orderId, // Corrected from metadata.id
-    },
-    data: {
-      isPaid: true,
-      address: metadata.state,
-      phone: metadata.phone,
-    },
-    include: {
-      orderItems: true,
-    },
-  });
-
-  const productIds = order.orderItems.map((orderItems) => orderItems.productId);
-
-  await prismadb.product.updateMany({
-    where: {
-      id: {
-        in: [...productIds],
-      },
-    },
-    data: {
-      isArchived: true,
-    },
-  });
-
-  console.log(`Order with reference ${reference} marked as paid.`);
 }
