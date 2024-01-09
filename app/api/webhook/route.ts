@@ -13,6 +13,9 @@ export async function POST(req: Request) {
   const secret = process.env.PAYSTACK_SECRET_TEST_KEY;
   const metadata = body.data.metadata;
 
+  console.log(metadata);
+  
+
   const hash = crypto
     .createHmac("sha512", secret)
     .update(JSON.stringify(req.body))
