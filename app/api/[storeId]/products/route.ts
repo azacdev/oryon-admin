@@ -18,35 +18,30 @@ export async function POST(
       sizeId,
       images,
       isFeatured,
-      isArchieved,
+      isArchived,
+      quantity,
+      description,
+      outOfStock,
     } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 401 });
     }
 
-    if (!name) {
-      return new NextResponse("Name is required", { status: 400 });
-    }
-
-    if (!price) {
-      return new NextResponse("Price is required", { status: 400 });
-    }
-
-    if (!categoryId) {
-      return new NextResponse("Category id is required", { status: 400 });
-    }
-
-    if (!colorId) {
-      return new NextResponse("Color id is required", { status: 400 });
-    }
-
-    if (!sizeId) {
-      return new NextResponse("Size id is required", { status: 400 });
-    }
-
-    if (!images || !images.length) {
-      return new NextResponse("Images is required", { status: 400 });
+    if (
+      !name ||
+      !price ||
+      !categoryId ||
+      !colorId ||
+      !quantity ||
+      !description ||
+      !sizeId ||
+      !images ||
+      !images.length
+    ) {
+      return new NextResponse("Incomplete product information", {
+        status: 400,
+      });
     }
 
     if (!params.storeId) {
@@ -72,13 +67,16 @@ export async function POST(
         categoryId: categoryId,
         colorId: colorId,
         sizeId: sizeId,
+        quantity: quantity,
+        description: description,
         images: {
           createMany: {
             data: [...images.map((image: { url: string }) => image)],
           },
         },
-        isArchived: isArchieved,
+        isArchived: isArchived,
         isFeatured: isFeatured,
+        outOfStock: outOfStock,
         storeId: params.storeId,
       },
     });
@@ -113,6 +111,7 @@ export async function GET(
         sizeId: sizeId,
         isFeatured: isFeatured ? true : undefined,
         isArchived: false,
+        outOfStock: false,
       },
       include: {
         images: true,

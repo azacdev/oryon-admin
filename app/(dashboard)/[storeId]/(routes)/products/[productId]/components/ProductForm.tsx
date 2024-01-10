@@ -32,16 +32,20 @@ import {
   SelectValue,
 } from "@components/ui/select";
 import { Checkbox } from "@components/ui/checkbox";
+import { Textarea } from "@components/ui/textarea";
 
 const formSchema = z.object({
   name: z.string().min(1),
   images: z.object({ url: z.string() }).array(),
   price: z.coerce.number().min(1),
+  quantity: z.number().min(1),
+  description: z.string().min(1),
   categoryId: z.string().min(1),
   colorId: z.string().min(1),
   sizeId: z.string().min(1),
   isFeatured: z.boolean().default(false).optional(),
-  isArchieved: z.boolean().default(false).optional(),
+  isArchived: z.boolean().default(false).optional(),
+  outOfStock: z.boolean().default(false).optional(),
 });
 
 interface ProductFormProps {
@@ -73,16 +77,23 @@ const ProductForm = ({
   const form = useForm<ProductFormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: initialData
-      ? { ...initialData, price: parseFloat(String(initialData?.price)) }
+      ? {
+          ...initialData,
+          price: parseFloat(String(initialData?.price)),
+          quantity: initialData?.quantity || 0,
+        }
       : {
           name: "",
           images: [],
           price: 0,
+          quantity: 0,
+          description: "",
           categoryId: "",
           colorId: "",
           sizeId: "",
           isFeatured: false,
-          isArchieved: false,
+          isArchived: false,
+          outOfStock: false,
         },
   });
 
@@ -216,6 +227,25 @@ const ProductForm = ({
 
             <FormField
               control={form.control}
+              name="quantity"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Quantity</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="number"
+                      disabled={loading}
+                      placeholder="Quantity"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="categoryId"
               render={({ field }) => (
                 <FormItem>
@@ -315,6 +345,24 @@ const ProductForm = ({
 
             <FormField
               control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      disabled={loading}
+                      placeholder="Description"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
               name="isFeatured"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-start space-x-3 space-y-8 rounded-md border p-4">
@@ -336,7 +384,7 @@ const ProductForm = ({
 
             <FormField
               control={form.control}
-              name="isArchieved"
+              name="isArchived"
               render={({ field }) => (
                 <FormItem className="flex flex-row items-start space-x-3 space-y-8 rounded-md border p-4">
                   <FormControl>
@@ -346,9 +394,30 @@ const ProductForm = ({
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel>Archieved</FormLabel>
+                    <FormLabel>Archived</FormLabel>
                     <FormDescription>
                       This product will not appear anywhere on the store
+                    </FormDescription>
+                  </div>
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="outOfStock"
+              render={({ field }) => (
+                <FormItem className="flex flex-row items-start space-x-3 space-y-8 rounded-md border p-4">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <div className="space-y-1 leading-none">
+                    <FormLabel>Stock</FormLabel>
+                    <FormDescription>
+                      This product will not appear on the store
                     </FormDescription>
                   </div>
                 </FormItem>

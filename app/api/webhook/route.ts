@@ -26,7 +26,6 @@ export async function POST(req: Request) {
 
     if (eventType === "charge.success") {
       if (status === "success") {
-        // Success! Confirm the customer's payment
         const order = await prismadb.order.update({
           where: {
             id: metadata?.orderId,
@@ -34,7 +33,7 @@ export async function POST(req: Request) {
           data: {
             isPaid: true,
             address: metadata.state,
-            phone: metadata?.phone || "",
+            phone: metadata?.phone,
           },
           include: {
             orderItems: true,

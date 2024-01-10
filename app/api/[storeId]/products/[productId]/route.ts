@@ -48,35 +48,30 @@ export async function PATCH(
       sizeId,
       images,
       isFeatured,
-      isArchieved,
+      isArchived,
+      quantity,
+      description,
+      outOfStock
     } = body;
 
     if (!userId) {
       return new NextResponse("Unauthenticated", { status: 401 });
     }
 
-    if (!name) {
-      return new NextResponse("Name is required", { status: 400 });
-    }
-
-    if (!price) {
-      return new NextResponse("Price is required", { status: 400 });
-    }
-
-    if (!categoryId) {
-      return new NextResponse("Category id is required", { status: 400 });
-    }
-
-    if (!colorId) {
-      return new NextResponse("Color id is required", { status: 400 });
-    }
-
-    if (!sizeId) {
-      return new NextResponse("Size id is required", { status: 400 });
-    }
-
-    if (!images || !images.length) {
-      return new NextResponse("Images is required", { status: 400 });
+    if (
+      !name ||
+      !price ||
+      !categoryId ||
+      !colorId ||
+      !quantity ||
+      !description ||
+      !sizeId ||
+      !images ||
+      !images.length
+    ) {
+      return new NextResponse("Incomplete product information", {
+        status: 400,
+      });
     }
 
     if (!params.productId) {
@@ -104,11 +99,14 @@ export async function PATCH(
         categoryId: categoryId,
         colorId: colorId,
         sizeId: sizeId,
+        quantity: quantity,
+        description: description,
         images: {
           deleteMany: {},
         },
         isFeatured: isFeatured,
-        isArchived: isArchieved,
+        isArchived: isArchived,
+        outOfStock: outOfStock,
         storeId: params.storeId,
       },
     });
