@@ -38,7 +38,7 @@ const formSchema = z.object({
   name: z.string().min(1),
   images: z.object({ url: z.string() }).array(),
   price: z.coerce.number().min(1),
-  quantity: z.number().min(1),
+  quantity: z.coerce.number().min(1),
   description: z.string().min(1),
   categoryId: z.string().min(1),
   colorId: z.string().min(1),
@@ -80,7 +80,7 @@ const ProductForm = ({
       ? {
           ...initialData,
           price: parseFloat(String(initialData?.price)),
-          quantity: initialData?.quantity || 0,
+          quantity: parseFloat(String(initialData?.quantity)),
         }
       : {
           name: "",
