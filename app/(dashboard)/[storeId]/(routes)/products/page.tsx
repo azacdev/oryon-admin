@@ -28,7 +28,7 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
     outOfStock: item.outOfStock,
     price: formatter.format(item.price.toNumber()),
     category: item.category.name,
-    quantity: item.quantity,
+    quantity: item.quantity.toNumber(),
     description: item.description,
     size: item.size.name,
     color: item.color.value,

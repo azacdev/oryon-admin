@@ -415,7 +415,7 @@ const ProductForm = ({
                     />
                   </FormControl>
                   <div className="space-y-1 leading-none">
-                    <FormLabel>Stock</FormLabel>
+                    <FormLabel>Out of Stock</FormLabel>
                     <FormDescription>
                       This product will not appear on the store
                     </FormDescription>
