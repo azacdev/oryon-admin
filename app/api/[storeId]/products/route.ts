@@ -60,6 +60,8 @@ export async function POST(
       return new NextResponse("Unauthorised", { status: 403 });
     }
 
+    const quantityAsNumber = parseInt(quantity, 10);
+
     const product = await prismadb.product.create({
       data: {
         name: name,
@@ -67,7 +69,7 @@ export async function POST(
         categoryId: categoryId,
         colorId: colorId,
         sizeId: sizeId,
-        quantity: quantity,
+        quantity: quantityAsNumber,
         description: description,
         images: {
           createMany: {

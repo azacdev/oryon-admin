@@ -87,7 +87,7 @@ model Product {
   category    Catergory   @relation("CategoryToProduct", fields:  [categoryId], references: [id])
   name        String
   price       Decimal
-  quantity    Decimal
+  quantity    Int
   description String
   isFeatured  Boolean     @default(false)
   isArchived  Boolean     @default(false)

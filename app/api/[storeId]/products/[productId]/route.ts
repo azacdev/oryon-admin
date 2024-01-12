@@ -1,4 +1,3 @@
-import { Product } from "@prisma/client";
 import { auth } from "@clerk/nextjs";
 import prismadb from "@lib/prismadb";
 
@@ -89,6 +88,8 @@ export async function PATCH(
       return new NextResponse("Unauthorised", { status: 403 });
     }
 
+    const quantityAsNumber = parseInt(quantity, 10);
+
     await prismadb.product.update({
       where: {
         id: params.productId,
@@ -99,7 +100,7 @@ export async function PATCH(
         categoryId: categoryId,
         colorId: colorId,
         sizeId: sizeId,
-        quantity: quantity,
+        quantity: quantityAsNumber,
         description: description,
         images: {
           deleteMany: {},
