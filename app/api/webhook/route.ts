@@ -68,6 +68,7 @@ export async function POST(req: Request) {
               },
               data: {
                 // isArchived: true,
+                outOfStock: true,
                 quantity: {
                   decrement: quantity,
                 },
