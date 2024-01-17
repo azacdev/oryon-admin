@@ -61,9 +61,9 @@ export async function POST(req: Request) {
         // });
 
         for (const [productId, quantity] of Object.entries(productsToUpdate)) {
-          console.log(quantity);
+          console.log(typeof quantity);
           console.log(productId);
-          
+
           if (typeof quantity === "number") {
             await prismadb.product.update({
               where: {
