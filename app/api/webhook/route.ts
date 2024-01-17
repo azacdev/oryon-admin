@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import prismadb from "@lib/prismadb";
+import { Product } from "@prisma/client";
+import { any } from "zod";
 
 const crypto = require("crypto");
 
@@ -9,8 +11,6 @@ export async function POST(req: Request) {
   const headers = req.headers;
   const secret = process.env.PAYSTACK_SECRET_TEST_KEY;
   const metadata = body.data.metadata;
-  console.log(metadata);
-  
 
   const hash = crypto
     .createHmac("sha512", secret)
@@ -40,20 +40,41 @@ export async function POST(req: Request) {
           },
         });
 
-        const productIds = order.orderItems.map(
-          (orderItems) => orderItems.productId
-        );
+        // const productIds = order.orderItems.map(
+        //   (orderItems) => orderItems.productId
+        // );
 
-        await prismadb.product.updateMany({
-          where: {
-            id: {
-              in: [...productIds],
-            },
-          },
-          data: {
-            isArchived: true,
-          },
+        const productsToUpdate: any = {};
+        metadata.items.forEach((item: Product) => {
+          productsToUpdate[item.id] = item.quantity;
         });
+
+        // await prismadb.product.updateMany({
+        //   where: {
+        //     id: {
+        //       in: [...productIds],
+        //     },
+        //   },
+        //   data: {
+        //     isArchived: true,
+        //   },
+        // });
+
+        for (const [productId, quantity] of Object.entries(productsToUpdate)) {
+          if (typeof quantity === "number") {
+            await prismadb.product.update({
+              where: {
+                id: productId,
+              },
+              data: {
+                // isArchived: true,
+                quantity: {
+                  decrement: quantity,
+                },
+              },
+            });
+          }
+        }
 
         return new NextResponse(null, { status: 200 });
       } else {

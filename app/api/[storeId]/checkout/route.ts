@@ -1,4 +1,5 @@
 import prismadb from "@lib/prismadb";
+import { Product } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 const corsHeaders = {
@@ -16,7 +17,7 @@ export async function POST(
   { params }: { params: { storeId: string } }
 ) {
   try {
-    const { productIds, values } = await req.json();
+    const { productIds, values, items } = await req.json();
 
     if (!productIds || productIds.length === 0) {
       return new NextResponse("Product Ids are required", { status: 400 });
@@ -46,23 +47,30 @@ export async function POST(
       },
     });
 
-    const calculateAmount = () => {
-      return products.reduce(
-        (total: number, item: any) => total + Number(item.price),
-        0
-      ) * 100;
-    };
-    const amount = calculateAmount();
+    const totalAmount = items.reduce((total: number, item: Product) => {
+      const matchingProduct: any = products.find(
+        (product) => product.id === item.id
+      );
+      if (matchingProduct) {
+        total += matchingProduct.price * item.quantity;
+      }
+      return total;
+    }, 0 as number);
+
+    const quantity = items.map((item: Product) => item.quantity);
+
+    console.log(quantity);
 
     const fields = {
       email: values.email,
-      amount: amount,
+      amount: totalAmount * 100,
       metadata: {
         orderId: order.id,
         state: values.state,
         products: products,
         firstname: values.firstname,
         phone: values.phone,
+        items: items,
         cancel_action: "http://localhost:3001/checkout",
       },
     };
