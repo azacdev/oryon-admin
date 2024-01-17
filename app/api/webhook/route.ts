@@ -64,20 +64,20 @@ export async function POST(req: Request) {
           console.log(typeof quantity);
           console.log(productId);
 
-          if (typeof quantity === "number") {
-            await prismadb.product.update({
-              where: {
-                id: productId,
+          // if (typeof quantity === "number") {
+          await prismadb.product.update({
+            where: {
+              id: productId,
+            },
+            data: {
+              // isArchived: true,
+              outOfStock: true,
+              quantity: {
+                decrement: Number(quantity),
               },
-              data: {
-                // isArchived: true,
-                outOfStock: true,
-                quantity: {
-                  decrement: quantity,
-                },
-              },
-            });
-          }
+            },
+          });
+          // }
         }
 
         return new NextResponse(null, { status: 200 });
