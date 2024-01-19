@@ -1,3 +1,4 @@
+import { ProductList } from './../../../../qxp-nextjs-zustand-main/src/entities/Product';
 import { NextResponse } from "next/server";
 import prismadb from "@lib/prismadb";
 import { Product } from "@prisma/client";
@@ -34,7 +35,8 @@ export async function POST(req: Request) {
             isPaid: true,
             address: metadata.state,
             phone: metadata.phone,
-            quantity: metadata.quantity.map(Number),
+            productList: metadata.products,
+            // quantity: metadata.quantity,
             totalPrice: metadata.totalPrice,
           },
           include: {
