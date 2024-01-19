@@ -26,15 +26,15 @@ const OrdersPage = async ({ params }: { params: { storeId: string } }) => {
     id: item.id,
     phone: item.phone,
     address: item.address,
+    // products: item.orderItems
+    //   .map((orderItem) => orderItem.product.name)
+    //   .join(", "),
     products: item.orderItems
-      .map((orderItem) => orderItem.product.name)
+      .map(
+        (orderItem) =>
+          `<span class="math-inline">${orderItem.product.name} (${item.quantity})</span>`
+      )
       .join(", "),
-    // totalPrice: formatter.format(
-    //   item.orderItems.reduce((total, item) => {
-    //     return total + Number(item.product.price);
-    //   }, 0)
-    // ),
-    // totalPrice: Number(item.totalPrice).toLocaleString,
     totalPrice: `NGN ${item.totalPrice}`,
     isPaid: item.isPaid,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),

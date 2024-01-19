@@ -36,8 +36,7 @@ const OrderClient = ({ data }: OrderClientProps) => {
     }
   };
 
-  console.log(data.map(item => item.totalPrice));
-  
+  console.log(data.map((item) => item.quantity));
 
   return (
     <>
