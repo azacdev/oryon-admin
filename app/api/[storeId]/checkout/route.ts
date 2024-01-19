@@ -57,16 +57,12 @@ export async function POST(
       return total;
     }, 0 as number);
 
-    // const quantity = items.map((item: Product) => item.quantity);
-    // console.log(quantity);
-
     const fields = {
       email: values.email,
       amount: totalAmount * 100,
       metadata: {
         orderId: order.id,
         state: values.state,
-        // products: products,
         firstname: values.firstname,
         phone: values.phone,
         totalPrice: totalAmount,
@@ -74,7 +70,6 @@ export async function POST(
         productList: items
           .map((item: Product) => `${item.name} (${item.quantity})`)
           .join(", "),
-        // quantity: quantity,
         cancel_action: "http://localhost:3001/checkout",
       },
     };

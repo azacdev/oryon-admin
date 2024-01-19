@@ -5,7 +5,6 @@ const crypto = require("crypto");
 
 export async function POST(req: Request) {
   const body = await req.json();
-  console.log("requestBody", body);
   const headers = req.headers;
   const secret = process.env.PAYSTACK_SECRET_TEST_KEY;
   const metadata = body.data.metadata;
@@ -22,7 +21,6 @@ export async function POST(req: Request) {
     const status = chargeData.status;
     console.log(eventType);
     console.log(status);
-    
 
     if (eventType === "charge.success") {
       if (status === "success") {
@@ -35,7 +33,6 @@ export async function POST(req: Request) {
             address: metadata.state,
             phone: metadata.phone,
             productList: metadata.productList,
-            // quantity: metadata.quantity,
             totalPrice: metadata.totalPrice,
           },
           include: {
@@ -43,25 +40,10 @@ export async function POST(req: Request) {
           },
         });
 
-        // const productIds = order.orderItems.map(
-        //   (orderItems) => orderItems.productId
-        // );
-
         const productsToUpdate: any = {};
         metadata.items.forEach((item: Product) => {
           productsToUpdate[item.id] = item.quantity;
         });
-
-        // await prismadb.product.updateMany({
-        //   where: {
-        //     id: {
-        //       in: [...productIds],
-        //     },
-        //   },
-        //   data: {
-        //     isArchived: true,
-        //   },
-        // });
 
         for (const [productId, quantity] of Object.entries(productsToUpdate)) {
           console.log(typeof quantity);
