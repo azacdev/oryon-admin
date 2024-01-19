@@ -1,4 +1,3 @@
-import { ProductList } from './../../../../qxp-nextjs-zustand-main/src/entities/Product';
 import { NextResponse } from "next/server";
 import prismadb from "@lib/prismadb";
 import { Product } from "@prisma/client";

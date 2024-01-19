@@ -57,8 +57,8 @@ export async function POST(
       return total;
     }, 0 as number);
 
-    const quantity = items.map((item: Product) => item.quantity);
-    console.log(quantity);
+    // const quantity = items.map((item: Product) => item.quantity);
+    // console.log(quantity);
 
     const fields = {
       email: values.email,
@@ -74,7 +74,7 @@ export async function POST(
         productList: items
           .map((item: Product) => `${item.name} (${item.quantity})`)
           .join(", "),
-        quantity: quantity,
+        // quantity: quantity,
         cancel_action: "http://localhost:3001/checkout",
       },
     };
