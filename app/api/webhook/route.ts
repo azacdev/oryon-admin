@@ -23,7 +23,6 @@ export async function POST(req: Request) {
 
     if (eventType === "charge.success") {
       if (status === "success") {
-        const quantity = metadata.items.map((item: Product) => item.quantity);
         const order = await prismadb.order.update({
           where: {
             id: metadata?.orderId,
@@ -32,7 +31,7 @@ export async function POST(req: Request) {
             isPaid: true,
             address: metadata.state,
             phone: metadata.phone,
-            quantity: quantity,
+            quantity: metadata.quantity,
             totalPrice: metadata.totalPrice,
           },
           include: {

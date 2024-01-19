@@ -26,14 +26,8 @@ const OrdersPage = async ({ params }: { params: { storeId: string } }) => {
     id: item.id,
     phone: item.phone,
     address: item.address,
-    // products: item.orderItems
-    //   .map((orderItem) => orderItem.product.name)
-    //   .join(", "),
     products: item.orderItems
-      .map(
-        (orderItem) =>
-          `<span class="math-inline">${orderItem.product.name} (${item.quantity})</span>`
-      )
+      .map((orderItem) => orderItem.product.name)
       .join(", "),
     totalPrice: `NGN ${item.totalPrice}`,
     isPaid: item.isPaid,
