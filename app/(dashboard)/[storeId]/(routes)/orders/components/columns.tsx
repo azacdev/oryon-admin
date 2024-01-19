@@ -9,7 +9,7 @@ export type OrderColumn = {
   phone: string;
   address: string;
   isPaid: boolean;
-  quantity?: string;
+  quantity?: any;
   totalPrice: string;
   products: string;
   createdAt: string;
