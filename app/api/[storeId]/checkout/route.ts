@@ -66,7 +66,7 @@ export async function POST(
         products: products,
         firstname: values.firstname,
         phone: values.phone,
-        totalPrice: totalAmount * 100,
+        totalPrice: totalAmount,
         items: items,
         cancel_action: "http://localhost:3001/checkout",
       },
