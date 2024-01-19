@@ -58,7 +58,6 @@ export async function POST(
     }, 0 as number);
 
     const quantity = items.map((item: Product) => item.quantity);
-
     console.log(quantity);
 
     const fields = {
