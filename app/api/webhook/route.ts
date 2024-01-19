@@ -23,7 +23,7 @@ export async function POST(req: Request) {
 
     if (eventType === "charge.success") {
       if (status === "success") {
-        const order = await prismadb.order.update({
+        await prismadb.order.update({
           where: {
             id: metadata?.orderId,
           },
