@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 import prismadb from "@lib/prismadb";
 import { Product } from "@prisma/client";
-import { any } from "zod";
-
 const crypto = require("crypto");
 
 export async function POST(req: Request) {
@@ -19,7 +17,6 @@ export async function POST(req: Request) {
   const signature = headers.get("x-paystack-signature");
 
   if (hash !== signature) {
-    // Retrieve the request's body
     const eventType = body.event;
     const chargeData = body.data;
     const status = chargeData.status;
@@ -33,7 +30,9 @@ export async function POST(req: Request) {
           data: {
             isPaid: true,
             address: metadata.state,
-            phone: metadata?.phone,
+            phone: metadata.phone,
+            quantity: metadata.items.quantity,
+            totalPrice: metadata.items.totalPrice,
           },
           include: {
             orderItems: true,
@@ -64,20 +63,18 @@ export async function POST(req: Request) {
           console.log(typeof quantity);
           console.log(productId);
 
-          // if (typeof quantity === "number") {
           await prismadb.product.update({
             where: {
               id: productId,
             },
             data: {
-              // isArchived: true,
-              outOfStock: true,
+              isArchived: Number(quantity) <= 0 && true,
+              outOfStock: Number(quantity) <= 0 && true,
               quantity: {
                 decrement: Number(quantity),
               },
             },
           });
-          // }
         }
 
         return new NextResponse(null, { status: 200 });
