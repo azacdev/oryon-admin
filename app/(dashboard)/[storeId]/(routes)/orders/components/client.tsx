@@ -36,6 +36,9 @@ const OrderClient = ({ data }: OrderClientProps) => {
     }
   };
 
+  console.log(data.map(item => item.totalPrice));
+  
+
   return (
     <>
       <AlertModal

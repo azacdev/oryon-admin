@@ -32,7 +32,7 @@ export async function POST(req: Request) {
             address: metadata.state,
             phone: metadata.phone,
             quantity: metadata.items.quantity,
-            totalPrice: metadata.items.totalPrice,
+            totalPrice: metadata.totalPrice,
           },
           include: {
             orderItems: true,
