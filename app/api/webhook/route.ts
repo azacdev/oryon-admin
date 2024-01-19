@@ -34,7 +34,7 @@ export async function POST(req: Request) {
             isPaid: true,
             address: metadata.state,
             phone: metadata.phone,
-            quantity: metadata.quantity,
+            quantity: metadata.quantity.map(Number),
             totalPrice: metadata.totalPrice,
           },
           include: {
