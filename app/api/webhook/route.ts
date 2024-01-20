@@ -64,9 +64,9 @@ export async function POST(req: Request) {
         }
 
         return new NextResponse(null, {
-          status: 200,
+          status: 302, // Redirect status code
           headers: {
-            Location: `${process.env.FRONTEND_STORE_URL}/?success=true`,
+            Location: `${process.env.FRONTEND_STORE_URL}/checkout?success=1`, // Replace with your desired URL
           },
         });
       } else {

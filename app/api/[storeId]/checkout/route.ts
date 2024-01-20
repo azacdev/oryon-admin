@@ -70,7 +70,7 @@ export async function POST(
         productList: items
           .map((item: Product) => `${item.name} (${item.quantity})`)
           .join(", "),
-        cancel_action: "http://localhost:3001/checkout",
+        cancel_action: "http://localhost:3001/checkout?canceled=1",
       },
     };
 
