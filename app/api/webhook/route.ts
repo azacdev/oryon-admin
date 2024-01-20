@@ -63,7 +63,12 @@ export async function POST(req: Request) {
           });
         }
 
-        return new NextResponse(null, { status: 200 });
+        return new NextResponse(null, {
+          status: 200,
+          headers: {
+            Location: `${process.env.FRONTEND_STORE_URL}/?success=true`,
+          },
+        });
       } else {
         return NextResponse.json(
           { message: "Payment unsuccessful" },

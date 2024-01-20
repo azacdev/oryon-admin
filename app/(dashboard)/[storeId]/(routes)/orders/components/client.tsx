@@ -36,8 +36,6 @@ const OrderClient = ({ data }: OrderClientProps) => {
     }
   };
 
-  console.log(data.map((item) => typeof(item.quantity)));
-
   return (
     <>
       <AlertModal
