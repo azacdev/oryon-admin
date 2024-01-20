@@ -19,7 +19,6 @@ export async function POST(req: Request) {
     const eventType = body.event;
     const chargeData = body.data;
     const status = chargeData.status;
-    console.log(eventType);
     console.log(status);
 
     if (eventType === "charge.success") {
@@ -46,9 +45,6 @@ export async function POST(req: Request) {
         });
 
         for (const [productId, quantity] of Object.entries(productsToUpdate)) {
-          console.log(typeof quantity);
-          console.log(productId);
-
           await prismadb.product.updateMany({
             where: {
               id: productId,
@@ -62,6 +58,7 @@ export async function POST(req: Request) {
             },
           });
         }
+        console.log(`${process.env.FRONTEND_STORE_URL}/checkout?success=1`);
 
         return new NextResponse(null, {
           status: 302, // Redirect status code
