@@ -29,7 +29,7 @@ export async function GET(
     }
     const verifyUrl = `https://api.paystack.co/transaction/verify/${reference}`;
     console.log(verifyUrl);
-    
+
     const verifyResponse = await fetch(verifyUrl, {
       method: "GET",
       headers: {
@@ -47,6 +47,7 @@ export async function GET(
     // Check the status from the verification result
     if (verifyResult.status && verifyResult.data.status === "success") {
       return new NextResponse("Verification successful", {
+        status: 200,
         headers: corsHeaders,
       });
     } else {
