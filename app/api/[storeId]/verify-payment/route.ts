@@ -16,7 +16,6 @@ export async function GET(
 ) {
   const { searchParams } = new URL(req.url);
   const reference = searchParams.get("reference");
-  console.log(reference);
 
   try {
     if (!params.storeId) {
@@ -29,7 +28,8 @@ export async function GET(
       });
     }
     const verifyUrl = `https://api.paystack.co/transaction/verify/${reference}`;
-
+    console.log(verifyUrl);
+    
     const verifyResponse = await fetch(verifyUrl, {
       method: "GET",
       headers: {
@@ -43,12 +43,10 @@ export async function GET(
     }
 
     const verifyResult = await verifyResponse.json();
-    console.log(verifyResult);
 
     // Check the status from the verification result
     if (verifyResult.status && verifyResult.data.status === "success") {
       return new NextResponse("Verification successful", {
-        status: 200,
         headers: corsHeaders,
       });
     } else {
@@ -58,11 +56,14 @@ export async function GET(
         headers: corsHeaders,
       });
     }
-  } catch (error) {
-    console.error("Error during verification:", error);
-    return new NextResponse("An error occurred during verification", {
-      status: 500,
-      headers: corsHeaders,
-    });
+  } catch (error: any) {
+    console.error("Error:", error);
+    return new NextResponse(
+      JSON.stringify({ error: "An error has occurred" }),
+      {
+        status: 500,
+        headers: corsHeaders,
+      }
+    );
   }
 }
