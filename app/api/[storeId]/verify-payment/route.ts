@@ -1,11 +1,13 @@
-import { NextApiRequest } from "next";
 import { NextResponse } from "next/server";
 
 export async function GET(
-  req: NextApiRequest,
+  req: Request,
   { params }: { params: { storeId: string } }
 ) {
-  const { reference } = req.query;
+  const { searchParams } = new URL(req.url);
+
+  const reference = searchParams.get("reference");
+  console.log(reference);
 
   try {
     if (!params.storeId) {
@@ -17,7 +19,6 @@ export async function GET(
         status: 400,
       });
     }
-    
     const verifyUrl = `https://api.paystack.co/transaction/verify/${reference}`;
 
     const verifyResponse = await fetch(verifyUrl, {
@@ -33,7 +34,6 @@ export async function GET(
 
     const verifyResult = await verifyResponse.json();
     console.log(verifyResult);
-    
 
     // Check the status from the verification result
     if (verifyResult.status && verifyResult.data.status === "success") {

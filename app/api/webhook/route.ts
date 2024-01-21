@@ -50,8 +50,8 @@ export async function POST(req: Request) {
               id: productId,
             },
             data: {
-              isArchived: Number(quantity) <= 0 && true,
-              outOfStock: Number(quantity) <= 0 && true,
+              isArchived: Number(quantity) === 0 && true,
+              outOfStock: Number(quantity) === 0 && true,
               quantity: {
                 decrement: Number(quantity),
               },
