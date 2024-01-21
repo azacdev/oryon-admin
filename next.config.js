@@ -28,6 +28,14 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: "https://oryon.vercel.app/checkout/:path*",
+      },
+    ];
+  },
 };
 
 module.exports = nextConfig;
