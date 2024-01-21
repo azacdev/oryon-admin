@@ -3,7 +3,8 @@ import { NextResponse } from "next/server";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
+  "Access-Control-Allow-Headers":
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Authorization, Content-Type, Date, X-Api-Version",
 };
 
 export async function OPTIONS() {
@@ -14,7 +15,6 @@ export async function GET(
   req: Request,
   { params }: { params: { storeId: string } }
 ) {
-  
   const { searchParams } = new URL(req.url);
   const reference = searchParams.get("reference");
 
