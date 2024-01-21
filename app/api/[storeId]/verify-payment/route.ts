@@ -14,6 +14,7 @@ export async function GET(
   req: Request,
   { params }: { params: { storeId: string } }
 ) {
+  
   const { searchParams } = new URL(req.url);
   const reference = searchParams.get("reference");
 
