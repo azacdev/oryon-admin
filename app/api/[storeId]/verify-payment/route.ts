@@ -35,6 +35,7 @@ export async function GET(
       headers: {
         Authorization: `Bearer ${process.env.PAYSTACK_SECRET_TEST_KEY}`,
       },
+      mode: "no-cors",
     });
 
     if (!verifyResponse.ok) {
