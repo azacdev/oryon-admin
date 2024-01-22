@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization",
-};
+// const corsHeaders = {
+//   "Access-Control-Allow-Origin": "*",
+//   "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+//   "Access-Control-Allow-Headers": "Content-Type, Authorization",
+// };
 
-export async function OPTIONS() {
-  return NextResponse.json({}, { headers: corsHeaders });
-}
+// export async function OPTIONS() {
+//   return NextResponse.json({}, { headers: corsHeaders });
+// }
 
 export async function GET(
   req: Request,
@@ -48,12 +48,12 @@ export async function GET(
     if (verifyResult.status && verifyResult.data.status === "success") {
       return new NextResponse("Verification successful", {
         status: 200,
-        headers: corsHeaders,
+        // headers: corsHeaders,
       });
     } else {
       return new NextResponse("Verification failed", {
         status: 400,
-        headers: corsHeaders,
+        // headers: corsHeaders,
       });
     }
   } catch (error: any) {
@@ -62,7 +62,7 @@ export async function GET(
       JSON.stringify({ error: "An error has occurred" }),
       {
         status: 500,
-        headers: corsHeaders,
+        // headers: corsHeaders,
       }
     );
   }
