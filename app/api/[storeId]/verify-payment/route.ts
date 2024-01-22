@@ -18,8 +18,9 @@ export async function GET(
   const reference = searchParams.get("reference");
 
   console.log(reference);
-  
-  return new NextResponse("Verification successful", {
+
+  return new Response("Verification successful", {
+    status: 200,
     headers: corsHeaders,
   });
   // try {
