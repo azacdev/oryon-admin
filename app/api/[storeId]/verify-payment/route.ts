@@ -14,16 +14,14 @@ export async function GET(
   req: Request,
   { params }: { params: { storeId: string } }
 ) {
-  
   const { searchParams } = new URL(req.url);
   const reference = searchParams.get("reference");
 
-  return new NextResponse("Verification successful",
-    {
-      status: 500,
-      headers: corsHeaders,
-    }
-  );
+  console.log(reference);
+  
+  return new NextResponse("Verification successful", {
+    headers: corsHeaders,
+  });
   // try {
   //   if (!params.storeId) {
   //     return new NextResponse("StoreId is required", { status: 400 });
