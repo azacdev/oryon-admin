@@ -21,7 +21,7 @@ const DashboardPage = async ({ params }: DashboardProps) => {
   const graphRevenue = await getGraphRevenue(params.storeId);
 
   return (
-    <div className="space-y-4 p-2 lg:p-8 pt-6">
+    <div className="space-y-4 p-4 lg:p-8 pt-6">
       <Heading title="Dashboard" description="Overview of your store" />
       <Separator />
       <div className="flex flex-wrap gap-4">
