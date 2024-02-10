@@ -2,7 +2,10 @@ import { auth } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
 import prismadb from "@lib/prismadb";
+
 import Navbar from "@components/navbar";
+import { SidebarProvider } from "@context/sidebar-toggle-context";
+import Sidebar from "@components/sidebar";
 
 export default async function DashboardLayout({
   children,
@@ -30,8 +33,16 @@ export default async function DashboardLayout({
 
   return (
     <>
-      <Navbar />
-      {children}
+      <SidebarProvider>
+        <div className="flex">
+          <Sidebar />
+
+          <div className="w-full">
+            <Navbar />
+            {children}
+          </div>
+        </div>
+      </SidebarProvider>
     </>
   );
 }

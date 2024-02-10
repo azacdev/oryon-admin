@@ -29,7 +29,7 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
     price: formatter.format(item.price.toNumber()),
     category: item.category.name,
     quantity: item.quantity,
-    description: item.description,
+    description: item.description.slice(0, 15) + "...",
     size: item.size.name,
     color: item.color.value,
     createdAt: format(item.createdAt, "MMMM do, yyyy"),
@@ -37,7 +37,7 @@ const ProductsPage = async ({ params }: { params: { storeId: string } }) => {
 
   return (
     <div className="flex-col">
-      <div className="flex-1 space-y-4 p-8 pt-6">
+      <div className="flex-1 space-y-4 p-2 lg:p-8 pt-6">
         <ProductClient data={formattedProducts} />
       </div>
     </div>

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import toast from "react-hot-toast";
 import { Copy, Server } from "lucide-react";
@@ -34,22 +34,28 @@ export const ApiAlert = ({
   };
 
   return (
-    <Alert>
-      <Server className="h-4 w-4" />
-      <AlertTitle className="flex items-center gap-x-2">
-        {title}
-        <Badge variant={variantMap[variant]}>{textMap[variant]}</Badge>
-      </AlertTitle>
+    <Alert className="p-2 lg:p-4">
+      {/* <Server className="h-4 w-4 hidden lg:block" /> */}
+      <div className="!pl-0">
+        <AlertTitle className="flex justify-between items-center gap-x-2">
+          <div>
+            {title}
+            <Badge className="ml-2 mb-2" variant={variantMap[variant]}>
+              {textMap[variant]}
+            </Badge>
+          </div>
 
-      <AlertDescription className="mt-4 flex items-center justify-between">
-        <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold">
-          {description}
-        </code>
+          <Button variant={"outline"} size={"icon"} onClick={onCopy}>
+            <Copy className="h-4 w-4" />
+          </Button>
+        </AlertTitle>
 
-        <Button variant={"outline"} size={"icon"} onClick={onCopy}>
-          <Copy className="h-4 w-4" />
-        </Button>
-      </AlertDescription>
+        <AlertDescription className="mt-4 flex items-center justify-between">
+          <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-xs lg:text-sm font-semibold">
+            {description}
+          </code>
+        </AlertDescription>
+      </div>
     </Alert>
   );
 };
