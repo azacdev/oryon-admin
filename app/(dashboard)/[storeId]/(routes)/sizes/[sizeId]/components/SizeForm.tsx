@@ -45,9 +45,7 @@ const SizeForm = ({ initialData }: SizeFormProps) => {
 
   const title = initialData ? "Edit size" : "Create size";
   const description = initialData ? "Edit a size" : "Add a new size";
-  const toastMessage = initialData
-    ? "Size updated."
-    : "Size created.";
+  const toastMessage = initialData ? "Size updated." : "Size created.";
   const action = initialData ? "Save changes" : "Create";
 
   const form = useForm<SizeFormValues>({
@@ -71,7 +69,7 @@ const SizeForm = ({ initialData }: SizeFormProps) => {
       }
       router.refresh();
       toast.success(toastMessage);
-      router.push(`/${params.storeId}/sizes`)
+      router.push(`/${params.storeId}/sizes`);
     } catch (error) {
       toast.error("Something went wrong.");
     } finally {
@@ -82,9 +80,7 @@ const SizeForm = ({ initialData }: SizeFormProps) => {
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(
-        `/api/${params.storeId}/sizes/${params.sizeId}`
-      );
+      await axios.delete(`/api/${params.storeId}/sizes/${params.sizeId}`);
       router.refresh();
       router.push(`/${params.storeId}/sizes`);
       toast.success("Size deleted.");
@@ -126,7 +122,7 @@ const SizeForm = ({ initialData }: SizeFormProps) => {
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 w-full"
         >
-          <div className="grid grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <FormField
               control={form.control}
               name="name"

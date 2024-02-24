@@ -13,6 +13,7 @@ import {
   ShoppingCart,
   LayoutDashboard,
   Package,
+  MenuIcon,
 } from "lucide-react";
 import { cn } from "@lib/utils";
 import { useParams, usePathname } from "next/navigation";
@@ -34,8 +35,6 @@ const Sidebar = () => {
     const handleResize = () => {
       if (isClient && window.innerWidth < 768) {
         setIsSidebarOpen(false);
-      } else {
-        setIsSidebarOpen(true);
       }
     };
 
@@ -107,12 +106,10 @@ const Sidebar = () => {
   return (
     <aside className="flex flex-col border-r px-3">
       <button
-        className={`hidden p-3 rounded-lg lg:flex transition-colors ${
-          isSidebarOpen ? "justify-end" : "justify-center"
-        }`}
+        className="hidden pt-3 rounded-lg lg:flex transition-colors justify-start"
         onClick={() => setIsSidebarOpen((prev) => !prev)}
       >
-        {isSidebarOpen ? <ChevronFirst /> : <ChevronLast />}
+        <MenuIcon className="h-7 w-7" />
       </button>
       <div
         className={`flex flex-col transition-colors mt-3 ${
