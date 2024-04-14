@@ -83,11 +83,11 @@ const Sidebar = () => {
   return (
     <aside className="flex-col border-r px-3 hidden sm:flex">
       <button className="mt-3 rounded-lg lg:flex transition-colors justify-center bg-primary text-lg font-semibold text-primary-foreground p-2">
-      <Package2 className="h-7 w-7 transition-all group-hover:scale-110" />
+        <Package2 className="h-7 w-7 transition-all group-hover:scale-110" />
       </button>
       <div className="flex flex-col transition-colors mt-3 justify-center items-center">
-        {routes.map((route) => (
-          <TooltipProvider>
+        {routes.map((route, index) => (
+          <TooltipProvider key={index}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
