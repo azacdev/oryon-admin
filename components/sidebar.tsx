@@ -1,10 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
-  ChevronFirst,
-  ChevronLast,
   Settings,
   Image,
   ListChecks,
@@ -14,43 +11,23 @@ import {
   LayoutDashboard,
   Package,
   MenuIcon,
+  Package2,
 } from "lucide-react";
 import { cn } from "@lib/utils";
 import { useParams, usePathname } from "next/navigation";
 
 import { useSidebar } from "@context/sidebar-toggle-context";
 import { ModeToggle } from "./theme-toggle";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip";
 
 const Sidebar = () => {
   const params = useParams();
-  const { isSidebarOpen, setIsSidebarOpen } = useSidebar();
   const pathname = usePathname();
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(typeof window !== "undefined");
-  }, []);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (isClient && window.innerWidth < 768) {
-        setIsSidebarOpen(false);
-      }
-    };
-
-    if (isClient) {
-      // Check initial window width
-      handleResize();
-
-      // Attach resize event listener
-      window.addEventListener("resize", handleResize);
-
-      // Cleanup event listener on component unmount
-      return () => {
-        window.removeEventListener("resize", handleResize);
-      };
-    }
-  }, [isClient, setIsSidebarOpen]);
 
   const routes = [
     {
@@ -104,38 +81,32 @@ const Sidebar = () => {
   ];
 
   return (
-    <aside className="flex flex-col border-r px-3">
-      <button
-        className="hidden pt-3 rounded-lg lg:flex transition-colors justify-start"
-        onClick={() => setIsSidebarOpen((prev) => !prev)}
-      >
-        <MenuIcon className="h-7 w-7" />
+    <aside className="flex-col border-r px-3 hidden sm:flex">
+      <button className="mt-3 rounded-lg lg:flex transition-colors justify-center bg-primary text-lg font-semibold text-primary-foreground p-2">
+      <Package2 className="h-7 w-7 transition-all group-hover:scale-110" />
       </button>
-      <div
-        className={`flex flex-col transition-colors mt-3 ${
-          isSidebarOpen ? "justify-center" : "justify-start items-center"
-        }`}
-      >
+      <div className="flex flex-col transition-colors mt-3 justify-center items-center">
         {routes.map((route) => (
-          <Link
-            href={route.href}
-            key={route.href}
-            className={cn(
-              "font-medium transition-colors hover:text-primary flex items-center py-2 my-1",
-              route.active
-                ? "text-blackdark:text-white"
-                : "text-muted-foreground"
-            )}
-          >
-            <route.icon className="mr-2" />
-            <span
-              className={`overflow-hidden transition-colors ${
-                isSidebarOpen ? "w-full" : "w-0"
-              }`}
-            >
-              {route.label}
-            </span>
-          </Link>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href={route.href}
+                  key={route.href}
+                  className={cn(
+                    "font-medium transition-colors hover:text-primary flex items-center py-2 my-1",
+                    route.active
+                      ? "text-blackdark:text-white"
+                      : "text-muted-foreground"
+                  )}
+                >
+                  <route.icon className="mr-2" />
+                  <span className="sr-only">{route.label}</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">{route.label}</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         ))}
       </div>
       <div className="flex mt-8 justify-start">
